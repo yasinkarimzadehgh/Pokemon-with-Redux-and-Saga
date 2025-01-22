@@ -1,0 +1,15 @@
+.app-layout {
+    flex-direction: column;
+    height: 100vh;
+    padding: 2rem;
+}
+
+.main {
+    display: flex;
+    height: 90%;
+    padding: 3rem;
+    background-color: rgba(var(--background-color-primary-r), var(--background-color-primary-g), var(--background-color-primary-b), 0.75);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+}
