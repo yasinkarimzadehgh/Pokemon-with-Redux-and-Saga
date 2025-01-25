@@ -1,8 +1,10 @@
 import React from "react";
-import "../Styles/Footer.css";
+import "../styles/Footer.css";
 import { NavLink, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-function Footer({ abilityList }) {
+function Footer() {
+  const { abilityList } = useSelector(state => state.ability);
   const { abilityName } = useParams();
   const isPokemonsActive = (isActive) => {
     return isActive || (abilityName && abilityList.includes(abilityName));

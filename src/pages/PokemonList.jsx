@@ -6,8 +6,10 @@ import Loader from "../components/Loader";
 import Error from "../components/Error";
 import { getPokemonSprite, formatNameForDisplay } from "../utils/helper";
 import "../styles/PokemonList.css";
+import { useDispatch, useSelector } from "react-redux";
 
-function PokemonList({ abilityList }) {
+function PokemonList() {
+  const { abilityList } = useSelector(state => state.ability);
   const navigate = useNavigate();
   const { abilityName } = useParams();
   const [abilityDetail, setAbilityDetail] = useState([]);
