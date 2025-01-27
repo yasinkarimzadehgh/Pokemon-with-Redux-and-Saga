@@ -6,7 +6,7 @@ import {
     DELETE_ABILITIES_REQUEST,
     DELETE_ABILITIES_SUCCESS,
     DELETE_ABILITIES_FAILURE,
-} from '../ability/abilityAction';
+} from './abilityAction';
 import axios from 'axios';
 
 const getAbilitiesState = (state) => state.ability;

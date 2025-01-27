@@ -1,46 +1,30 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "../styles/Login.css";
+import { useDispatch } from "react-redux";
+import { userLoginRequest } from "../store/user/userAction";
 
-function Login({ handleLoginSuccess }) {
+function Login() {
+  const dispatch = useDispatch();
+
   const [userId, setUserId] = useState("");
-  const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     if (!userId) {
-      setError("Please enter a user ID.");
-      setMessage("");
+      setMessage("Please enter a user ID.");
       return;
     }
-
     if (userId !== "17") {
       setMessage("This ID is not signed up.");
-      setError("");
       return;
     }
-
-    try {
-      const response = await axios.get(
-        `http://192.99.8.135/pokemon_api.php?route=get_info&user_id=${userId}`
-      );
-
-      setError("");
-      setMessage("");
-      handleLoginSuccess();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError("Failed to fetch data. Please try again.");
-      setMessage("");
-    }
-  };
+    dispatch(userLoginRequest(`http://192.99.8.135/pokemon_api.php?route=get_info&user_id=${userId}`)
+    )
+  }
 
   const handleInputChange = (e) => {
     setUserId(e.target.value);
-    setError("");
-    setMessage("");
   };
 
   return (
@@ -55,7 +39,6 @@ function Login({ handleLoginSuccess }) {
             value={userId}
             onChange={handleInputChange}
           />
-          {error && <p className="login-error">{error}</p>}
           {message && <p className="login-message">{message}</p>}
           <button className="login-button" type="submit">
             Login

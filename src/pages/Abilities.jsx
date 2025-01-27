@@ -1,10 +1,12 @@
-// src/pages/Abilities.jsx
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+
+import { useDispatch, useSelector } from 'react-redux';
 import { getAbilitiesRequest, deleteAbilitiesRequest, GET_ABILITIES_STORED } from '../store/ability/abilityAction';
+
 import Loader from '../components/Loader';
 import { formatNameForDisplay } from '../utils/helper';
+
 import '../styles/Abilities.css';
 
 

@@ -1,91 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import "animate.css";
 import Loader from "../components/Loader";
 import Error from "../components/Error";
-import { getPokemonSprite, formatNameForDisplay } from "../utils/helper";
+import { formatNameForDisplay } from "../utils/helper";
 import "../styles/PokemonList.css";
 import { useDispatch, useSelector } from "react-redux";
+import { getPokemonListRequest } from "../store/pokemonList/pokemonListAction";
 
 function PokemonList() {
-  const { abilityList } = useSelector(state => state.ability);
-  const navigate = useNavigate();
   const { abilityName } = useParams();
-  const [abilityDetail, setAbilityDetail] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState();
 
-  async function getAbilityDetail(name, fetchLimit) {
-    setLoading(true);
-    setError(null);
+  const dispatch = useDispatch();
+  const { abilityList } = useSelector(state => state.ability);
+  const { pokemonList, loading, error } = useSelector(state => state.pokemonList);
 
-    try {
-      const response = await axios.get(
-        `https://pokeapi.co/api/v2/ability/${name}`
-      );
-      const abilityDetail = response.data;
+  const navigate = useNavigate();
 
-      const pokemonUrls = abilityDetail.pokemon.map(
-        (pokemon) => pokemon.pokemon.url
-      );
-
-      const pokemonList = [];
-      const totalBatches = Math.ceil(pokemonUrls.length / fetchLimit);
-
-      const processBatch = async (batchIndex = 0) => {
-        if (batchIndex >= totalBatches) {
-          return;
-        }
-
-        const startIndex = batchIndex * fetchLimit;
-        const endIndex = Math.min(startIndex + fetchLimit, pokemonUrls.length);
-        const batchUrls = pokemonUrls.slice(startIndex, endIndex);
-
-        try {
-          const batchResults = await Promise.all(
-            batchUrls.map(async (url) => {
-              try {
-                const pokemonResponse = await axios.get(url);
-                const pokemonData = pokemonResponse.data;
-
-                const transformedData = {
-                  name: pokemonData.name,
-                  sprite: getPokemonSprite(pokemonData.sprites),
-                  abilities: pokemonData.abilities.map((ability) => ({
-                    name: ability.ability.name,
-                  })),
-                };
-                return transformedData;
-              } catch (error) {
-                console.error(`Error fetching ${url}:`, error);
-                return null;
-              }
-            })
-          );
-          pokemonList.push(...batchResults);
-
-          await processBatch(batchIndex + 1);
-        } catch (error) {
-          setError(err);
-          console.error("Error fetching ability details:", err);
-          setAbilityDetail([]);
-        }
-      };
-
-      await processBatch();
-      setAbilityDetail(pokemonList);
-    } catch (err) {
-      setError(err);
-      console.error("Error fetching ability details:", err);
-      setAbilityDetail([]);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   useEffect(() => {
-    getAbilityDetail(abilityName, 50);
+    dispatch(getPokemonListRequest(`https://pokeapi.co/api/v2/ability/${abilityName}`));
   }, [abilityName]);
 
   const handleBack = () => navigate("/abilityList");
@@ -125,7 +59,7 @@ function PokemonList() {
       ) : error ? (
         <Error error={error} />
       ) : (
-        abilityDetail && (
+        pokemonList && (
           <>
             <div className="ability-header">
               <button onClick={handleBack} className="back-button">
@@ -161,7 +95,7 @@ function PokemonList() {
                   </tr>
                 </thead>
                 <tbody className="pokemon-table-body">
-                  {abilityDetail.map(
+                  {pokemonList.map(
                     (pokemon, index) =>
                       pokemon && (
                         <tr

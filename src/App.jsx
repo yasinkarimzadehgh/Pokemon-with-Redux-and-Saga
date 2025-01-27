@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
 import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
-import axios from "axios";
+
+import { useSelector } from "react-redux";
+
 
 import AppLayout from "./pages/AppLayout";
 import Login from "./pages/Login";
@@ -17,59 +18,14 @@ import Home from "./pages/Home";
 import "./styles/theme.css";
 
 function App() {
-  //! ---------------------------------------------------------------------
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-  };
+  const { isLoggedIn } = useSelector(state => state.user);
 
   const ProtectedRoute = ({ element }) => {
     return isLoggedIn ? element : <Navigate to="/login" replace />;
   };
 
-  //! ---------------------------------------------------------------------
-  const [userData, setUserData] = useState(null);
-
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get(
-        "http://192.99.8.135/pokemon_api.php?route=get_info&user_id=17"
-      );
-      setUserData(response.data);
-      document.documentElement.setAttribute("data-theme", response.data.theme);
-      document.body.setAttribute("data-theme", response.data.theme);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      const storedUserData = localStorage.getItem("userData");
-
-      if (storedUserData) {
-        setUserData(JSON.parse(storedUserData));
-        document.documentElement.setAttribute(
-          "data-theme",
-          JSON.parse(storedUserData).theme
-        );
-        document.body.setAttribute(
-          "data-theme",
-          JSON.parse(storedUserData).theme
-        );
-      } else {
-        fetchUserData();
-      }
-    }
-  }, [isLoggedIn]);
-  //! ---------------------------------------------------------------------
-
-
-
-  //! ---------------------------------------------------------------------
 
   const router = createBrowserRouter([
     {
@@ -77,7 +33,7 @@ function App() {
       element: isLoggedIn ? (
         <Navigate to="/" replace />
       ) : (
-        <Login handleLoginSuccess={handleLoginSuccess} />
+        <Login />
       ),
     },
     {
@@ -107,7 +63,7 @@ function App() {
         {
           path: "/home",
           element: (
-            <Home setUserData={setUserData} setIsLoggedIn={setIsLoggedIn} />
+            <Home />
           ),
         },
       ],
