@@ -32,11 +32,12 @@ function Home() {
 
         dispatch(userUpdateRequest(formData));
     };
+
     useEffect(() => {
         const handleBackspaceKey = (event) => {
-            if (event.key === "Backspace") {
+            if (event.key === "Backspace" && event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA") {
                 dispatch(userLogout());
-                navigate("/login");;
+                navigate("/login");
             }
         };
 
@@ -46,6 +47,7 @@ function Home() {
             window.removeEventListener("keydown", handleBackspaceKey);
         };
     }, [dispatch, navigate]);
+
     return (
         <div className="profile-container">
             <p className="profile-title">Profile Settings</p>
