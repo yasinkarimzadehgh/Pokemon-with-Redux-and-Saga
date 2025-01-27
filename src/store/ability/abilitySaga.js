@@ -11,6 +11,9 @@ import axios from 'axios';
 
 const getAbilitiesState = (state) => state.ability;
 
+const API_BASE_URL = 'https://pokeapi.co/api/v2/ability/';
+const PAGE_LIMIT = 10;
+
 function* getAbilitiesSaga(action) {
     try {
         const response = yield call(axios.get, action.payload);
@@ -24,7 +27,7 @@ function* getAbilitiesSaga(action) {
             payload: {
                 abilityList: newAbilities,
                 nextApiUrl,
-                isLastPage: nextApiUrl === null ? true : false,
+                isLastPage: nextApiUrl === null,
                 currentOffset: newAbilities.length,
             },
         });
@@ -40,15 +43,16 @@ function* deleteAbilitiesSaga() {
 
         let newAbilities, newOffset, newUrl;
 
-        if (abilityList.length > 10) {
-            if (abilityList.length <= 20) {
-                newAbilities = abilityList.slice(0, 10);
-                newOffset = 10;
-                newUrl = 'https://pokeapi.co/api/v2/ability/?offset=10&limit=10';
+        if (abilityList.length > PAGE_LIMIT) {
+            const remainingAbilities = abilityList.length - PAGE_LIMIT;
+            if (remainingAbilities <= PAGE_LIMIT) {
+                newAbilities = abilityList.slice(0, PAGE_LIMIT);
+                newOffset = PAGE_LIMIT;
+                newUrl = `${API_BASE_URL}?offset=${newOffset}&limit=${PAGE_LIMIT}`;
             } else {
-                newAbilities = abilityList.slice(0, -10);
-                newOffset = currentOffset - 10;
-                newUrl = `https://pokeapi.co/api/v2/ability/?offset=${newOffset}&limit=10`;
+                newAbilities = abilityList.slice(0, -PAGE_LIMIT);
+                newOffset = currentOffset - PAGE_LIMIT;
+                newUrl = `${API_BASE_URL}?offset=${newOffset}&limit=${PAGE_LIMIT}`;
             }
         } else {
             newAbilities = abilityList;

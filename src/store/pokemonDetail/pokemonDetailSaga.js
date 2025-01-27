@@ -9,7 +9,6 @@ import axios from 'axios';
 function* getPokemonDetailSaga(action) {
     try {
         const response = yield call(axios.get, action.payload);
-        console.log(response.data)
         yield put({ type: GET_POKEMON_DETAIL_SUCCESS, payload: response.data });
     } catch (err) {
         console.error("Error fetching ability details:", err);
