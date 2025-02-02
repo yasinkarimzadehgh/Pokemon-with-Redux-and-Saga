@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Login.css";
 import { useDispatch } from "react-redux";
 import { userLoginRequest } from "../store/user/userAction";
+import { getCookieValue } from '../utils/helper.js';
 
 function Login() {
   const dispatch = useDispatch();
 
   const [userId, setUserId] = useState("");
+
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const cookieUserId = getCookieValue('user_id');
+    if (cookieUserId) {
+      setUserId(cookieUserId);
+    }
+  }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     if (!userId) {
       setMessage("Please enter a user ID.");
       return;
@@ -19,9 +29,15 @@ function Login() {
       setMessage("This ID is not signed up.");
       return;
     }
-    dispatch(userLoginRequest(`http://192.99.8.135/pokemon_api.php?route=get_info&user_id=${userId}`)
-    )
-  }
+
+    document.cookie = `user_id=${userId}`;
+
+    dispatch(
+      userLoginRequest(`http://192.99.8.135/pokemon_api.php?route=get_info&user_id=${userId}`)
+    );
+
+    setMessage("");
+  };
 
   const handleInputChange = (e) => {
     setUserId(e.target.value);

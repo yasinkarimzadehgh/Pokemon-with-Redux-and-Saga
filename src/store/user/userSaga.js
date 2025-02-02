@@ -1,3 +1,4 @@
+// userSaga.js
 import { takeLatest, put, call } from 'redux-saga/effects';
 import {
     USER_LOGIN_REQUEST,
@@ -8,12 +9,21 @@ import {
     USER_UPDATE_FAILURE,
 } from './userAction';
 import axios from 'axios';
+import { getCookieValue } from '../../utils/helper.js';
 
 function* userLoginSaga(action) {
     try {
-        const response = yield call(axios.get, action.payload, {
+        const userId = getCookieValue('user_id');
+
+        if (!userId) {
+            throw new Error('User ID not found in cookies. Please log in.');
+        }
+
+        const url = `http://192.99.8.135/pokemon_api.php?route=get_info&user_id=${userId}`;
+
+        const response = yield call(axios.get, url, {
             headers: {
-                Cookie: 'user_id=17;',
+                Cookie: `user_id=${userId};`,
             },
         });
         const data = response.data;
@@ -31,25 +41,33 @@ function* userLoginSaga(action) {
 function* userUpdateSaga(action) {
     try {
         const { payload } = action;
+        const userId = getCookieValue('user_id');
+
+        if (!userId) {
+            throw new Error('User ID not found in cookies. Please log in.');
+        }
+
+        const url = `http://192.99.8.135/pokemon_api.php?route=set_info&user_id=${userId}`;
+
         const response = yield call(
             axios.post,
-            'http://192.99.8.135/pokemon_api.php?route=set_info&user_id=17',
+            url,
             payload,
             {
                 headers: {
-                    Cookie: 'user_id=17;',
+                    Cookie: `user_id=${userId};`,
                 },
             }
         );
-        const theme = payload.get('theme');
 
+        const theme = payload.get('theme');
         document.documentElement.setAttribute('data-theme', theme);
         document.body.setAttribute('data-theme', theme);
 
         yield put({ type: USER_UPDATE_SUCCESS, payload: response.data });
 
         localStorage.setItem('userData', JSON.stringify(response.data));
-        console.log('UserData saved to localStorage:', response.data);
+        console.log('User data saved to localStorage:', response.data);
     } catch (error) {
         console.error('Error submitting form:', error);
         yield put({ type: USER_UPDATE_FAILURE, payload: error.message });

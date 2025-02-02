@@ -38,3 +38,14 @@ export function getPokemonSprite(sprites) {
 export function formatNameForDisplay(name) {
   return name.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }
+
+
+// Utility function to get the value of a cookie by name
+export function getCookieValue(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length >= 2) {
+    return parts.pop().split(';').shift();
+  }
+  return null;
+}
