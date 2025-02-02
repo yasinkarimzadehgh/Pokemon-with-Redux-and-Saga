@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import "animate.css";
 import Loader from "../components/Loader";
 import Error from "../components/Error";
-import { formatNameForDisplay } from "../utils/helper";
+import { formatNameForDisplay } from "../utils/helper.js";
 import "../styles/PokemonList.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getPokemonListRequest } from "../store/pokemonList/pokemonListAction";
@@ -100,12 +100,12 @@ function PokemonList() {
                       pokemon && (
                         <tr
                           key={index}
-                          onClick={() => navigate(`/pokemon/${pokemon.name}`)}
+                          onClick={() => navigate(`/pokemons/${pokemon.name}`)}
                           className="pokemon-row"
                         >
                           <td>
                             <Link
-                              to={`/pokemon/${pokemon.name}`}
+                              to={`/pokemons/${pokemon.name}`}
                               className="pokemon-name-link"
                             >
                               {formatNameForDisplay(pokemon.name)}

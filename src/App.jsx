@@ -51,7 +51,7 @@ function App() {
           element: <PokemonList />,
         },
         {
-          path: "/pokemon/:pokemonName",
+          path: "/pokemons/:pokemonName",
           element: <PokemonDetail />,
         },
         {

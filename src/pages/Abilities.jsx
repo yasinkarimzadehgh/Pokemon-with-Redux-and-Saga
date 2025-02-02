@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getAbilitiesRequest, deleteAbilitiesRequest, GET_ABILITIES_STORED } from '../store/ability/abilityAction';
 
 import Loader from '../components/Loader';
-import { formatNameForDisplay } from '../utils/helper';
+import { formatNameForDisplay } from '../utils/helper.js';
 
 import '../styles/Abilities.css';
 
@@ -14,7 +14,6 @@ function Abilities() {
   const dispatch = useDispatch();
   const { abilityList, currentOffset, loading, API_URL, isLastPage } = useSelector(state => state.ability);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredAbilities, setFilteredAbilities] = useState(abilityList);
 
   useEffect(() => {
     const storedAbilityList = localStorage.getItem("abilityList");
@@ -41,11 +40,10 @@ function Abilities() {
     }
   }, [abilityList]);
 
-  useEffect(() => {
-    const filtered = abilityList.filter(name =>
+  const filteredAbilities = useMemo(() => {
+    return abilityList.filter(name =>
       name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredAbilities(filtered);
   }, [abilityList, searchTerm]);
 
   const handleSearchChange = (event) => {

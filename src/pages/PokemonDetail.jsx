@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "../styles/PokemonDetail.css";
 import { useParams } from "react-router-dom";
-import { getPokemonSprite, formatNameForDisplay } from "../utils/helper";
+import { getPokemonSprite, formatNameForDisplay } from "../utils/helper.js";
 import Loader from "../components/Loader";
 import Error from "../components/Error";
 import { useNavigate } from "react-router-dom";
@@ -16,10 +16,6 @@ function PokemonDetail() {
 
     const dispatch = useDispatch();
     const { pokemonDetail, loading, error } = useSelector(state => state.pokemonDetail);
-
-
-
-
 
     useEffect(() => {
         dispatch(getPokemonDetailRequest(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`));
@@ -48,7 +44,7 @@ function PokemonDetail() {
         return () => {
             window.removeEventListener("keydown", handleBackspaceKey);
         };
-    }, [navigate]);
+    }, []);
 
     return (
         <div className="pokemon-detail">

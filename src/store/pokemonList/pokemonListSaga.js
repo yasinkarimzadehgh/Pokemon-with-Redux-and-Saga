@@ -4,7 +4,7 @@ import {
     GET_POKEMON_LIST_SUCCESS,
     GET_POKEMON_LIST_FAILURE,
 } from './pokemonListAction';
-import { getPokemonSprite } from "../../utils/helper";
+import { getPokemonSprite } from "../../utils/helper.js";
 import axios from 'axios';
 
 function* getPokemonListSaga(action) {
