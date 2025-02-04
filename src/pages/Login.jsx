@@ -18,6 +18,10 @@ function Login() {
     }
   }, []);
 
+  const handleInputChange = (e) => {
+    setUserId(e.target.value);
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -37,10 +41,6 @@ function Login() {
     );
 
     setMessage("");
-  };
-
-  const handleInputChange = (e) => {
-    setUserId(e.target.value);
   };
 
   return (

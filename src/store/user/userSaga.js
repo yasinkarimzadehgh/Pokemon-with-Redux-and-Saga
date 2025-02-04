@@ -11,7 +11,7 @@ import {
 import axios from 'axios';
 import { getCookieValue } from '../../utils/helper.js';
 
-function* userLoginSaga(action) {
+function* userLoginSaga() {
     try {
         const userId = getCookieValue('user_id');
 

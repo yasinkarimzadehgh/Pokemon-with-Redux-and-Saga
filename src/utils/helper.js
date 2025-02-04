@@ -40,7 +40,7 @@ export function formatNameForDisplay(name) {
 }
 
 
-// Utility function to get the value of a cookie by name
+// get the value of a cookie by name
 export function getCookieValue(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
