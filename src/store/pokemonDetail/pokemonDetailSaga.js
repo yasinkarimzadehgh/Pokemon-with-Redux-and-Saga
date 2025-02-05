@@ -6,6 +6,10 @@ import {
 } from './pokemonDetailAction';
 import axios from 'axios';
 
+export function* watchPokemonDetailSaga() {
+    yield takeLatest(GET_POKEMON_DETAIL_REQUEST, getPokemonDetailSaga);
+}
+
 function* getPokemonDetailSaga(action) {
     try {
         const response = yield call(axios.get, action.payload);
@@ -16,6 +20,3 @@ function* getPokemonDetailSaga(action) {
     }
 }
 
-export function* watchPokemonDetailSaga() {
-    yield takeLatest(GET_POKEMON_DETAIL_REQUEST, getPokemonDetailSaga);
-}

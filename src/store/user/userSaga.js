@@ -11,6 +11,12 @@ import {
 import axios from 'axios';
 import { getCookieValue } from '../../utils/helper.js';
 
+export function* watchUserSaga() {
+    yield takeLatest(USER_LOGIN_REQUEST, userLoginSaga);
+    yield takeLatest(USER_UPDATE_REQUEST, userUpdateSaga);
+}
+
+
 function* userLoginSaga() {
     try {
         const userId = getCookieValue('user_id');
@@ -64,6 +70,10 @@ function* userUpdateSaga(action) {
         document.documentElement.setAttribute('data-theme', theme);
         document.body.setAttribute('data-theme', theme);
 
+
+
+
+
         yield put({ type: USER_UPDATE_SUCCESS, payload: response.data });
 
         localStorage.setItem('userData', JSON.stringify(response.data));
@@ -74,7 +84,3 @@ function* userUpdateSaga(action) {
     }
 }
 
-export function* watchUserSaga() {
-    yield takeLatest(USER_LOGIN_REQUEST, userLoginSaga);
-    yield takeLatest(USER_UPDATE_REQUEST, userUpdateSaga);
-}

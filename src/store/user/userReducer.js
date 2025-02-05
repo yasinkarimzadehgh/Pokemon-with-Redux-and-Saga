@@ -35,9 +35,17 @@ const userReducer = (state = initialState, action) => {
                 error: action.payload,
                 loading: false,
             };
+
         case USER_UPDATE_REQUEST:
             return {
                 ...state,
+                userData: {
+                    name: action.payload.get('name'),
+                    theme: action.payload.get('theme'),
+                    picture: action.payload.get('picture')
+                        ? `http://192.99.8.135/users/images/${action.payload.get('picture')}`
+                        : state.userData.picture,
+                },
                 loading: true,
             };
         case USER_UPDATE_SUCCESS:

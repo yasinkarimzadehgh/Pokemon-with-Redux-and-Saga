@@ -7,16 +7,16 @@ import { userLogout, userUpdateRequest } from "../store/user/userAction";
 function Home() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { userData } = useSelector((state) => state.user);
+    const { userData, loading } = useSelector((state) => state.user);
 
-    const [image, setImage] = useState(null);
+    const [picProfile, setPicProfile] = useState(null);
     const [name, setName] = useState(userData?.name || "");
     const [theme, setTheme] = useState(userData?.theme || "light");
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setImage(file);
+            setPicProfile(file);
         }
     };
 
@@ -24,8 +24,9 @@ function Home() {
         e.preventDefault();
 
         const formData = new FormData();
-        if (image) {
-            formData.append("picture", image);
+
+        if (picProfile) {
+            formData.append("picture", picProfile);
         }
         formData.append("name", name);
         formData.append("theme", theme);
@@ -37,7 +38,6 @@ function Home() {
         const handleBackspaceKey = (event) => {
             if (event.key === "Backspace" && event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA") {
                 dispatch(userLogout());
-                navigate("/login");
             }
         };
 
@@ -53,8 +53,8 @@ function Home() {
             <p className="profile-title">Profile Settings</p>
             <div className="settings-main">
                 <form className="settings-form" onSubmit={submitHandler}>
-                    {image ? (
-                        <img src={URL.createObjectURL(image)} alt="Preview" className="profile-image" />
+                    {picProfile ? (
+                        <img src={URL.createObjectURL(picProfile)} alt="Preview" className="profile-image" />
                     ) : userData.picture ? (
                         <img src={userData.picture} alt="User" className="profile-image" />
                     ) : (
@@ -71,6 +71,7 @@ function Home() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className="settings-input"
+                        disabled={loading}
                     />
 
                     <label htmlFor="theme">Theme:</label>
@@ -79,6 +80,7 @@ function Home() {
                         value={theme}
                         onChange={(e) => setTheme(e.target.value)}
                         className="settings-select"
+                        disabled={loading}
                     >
                         <option value="light">Light Mode</option>
                         <option value="dark">Dark Mode</option>

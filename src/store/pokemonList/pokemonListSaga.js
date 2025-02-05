@@ -7,6 +7,11 @@ import {
 import { getPokemonSprite } from "../../utils/helper.js";
 import axios from 'axios';
 
+export function* watchPokemonListSaga() {
+    yield takeLatest(GET_POKEMON_LIST_REQUEST, getPokemonListSaga);
+}
+
+
 function* getPokemonListSaga(action) {
     try {
         const response = yield call(axios.get, action.payload);
@@ -41,7 +46,4 @@ function* getPokemonListSaga(action) {
     }
 }
 
-export function* watchPokemonListSaga() {
-    yield takeLatest(GET_POKEMON_LIST_REQUEST, getPokemonListSaga);
-}
 

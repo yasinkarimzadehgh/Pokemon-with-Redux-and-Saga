@@ -1,4 +1,4 @@
-import { takeLatest, put, call, select } from 'redux-saga/effects';
+import { takeLatest, put, call, select, takeEvery } from 'redux-saga/effects';
 import {
     GET_ABILITIES_REQUEST,
     GET_ABILITIES_SUCCESS,
@@ -8,6 +8,15 @@ import {
     DELETE_ABILITIES_FAILURE,
 } from './abilityAction';
 import axios from 'axios';
+
+export function* watchAbilitySaga() {
+    yield takeLatest(GET_ABILITIES_REQUEST, getAbilitiesSaga);
+    yield takeLatest(DELETE_ABILITIES_REQUEST, deleteAbilitiesSaga);
+
+    // yield takeEvery(GET_ABILITIES_REQUEST, getAbilitiesSaga);
+    // yield takeEvery(DELETE_ABILITIES_REQUEST, deleteAbilitiesSaga);
+
+}
 
 const getAbilitiesState = (state) => state.ability;
 
@@ -73,7 +82,3 @@ function* deleteAbilitiesSaga() {
     }
 }
 
-export function* watchAbilitySaga() {
-    yield takeLatest(GET_ABILITIES_REQUEST, getAbilitiesSaga);
-    yield takeLatest(DELETE_ABILITIES_REQUEST, deleteAbilitiesSaga);
-}
