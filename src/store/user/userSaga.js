@@ -1,5 +1,5 @@
-// userSaga.js
-import { takeLatest, put, call } from 'redux-saga/effects';
+import { takeLatest, put, call, fork, take } from 'redux-saga/effects';
+import { eventChannel } from 'redux-saga';
 import {
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
@@ -14,8 +14,43 @@ import { getCookieValue } from '../../utils/helper.js';
 export function* watchUserSaga() {
     yield takeLatest(USER_LOGIN_REQUEST, userLoginSaga);
     yield takeLatest(USER_UPDATE_REQUEST, userUpdateSaga);
+    yield takeLatest([USER_LOGIN_SUCCESS, USER_UPDATE_SUCCESS], handleThemeUpdate);
+    yield fork(watchStorageSaga);
 }
 
+function* handleThemeUpdate(action) {
+    const { payload } = action;
+    if (payload.theme) {
+        document.documentElement.setAttribute('data-theme', payload.theme);
+        document.body.setAttribute('data-theme', payload.theme);
+    }
+}
+
+function createStorageChannel() {
+    return eventChannel(emitter => {
+        const onStorageChange = (event) => {
+            if (event.key === 'userData') {
+                try {
+                    const userData = JSON.parse(event.newValue);
+                    emitter(userData);
+                } catch (error) {
+                    console.error('Error parsing userData:', error);
+                }
+            }
+        };
+
+        window.addEventListener('storage', onStorageChange);
+        return () => window.removeEventListener('storage', onStorageChange);
+    });
+}
+
+function* watchStorageSaga() {
+    const channel = yield call(createStorageChannel);
+    while (true) {
+        const userData = yield take(channel);
+        yield put({ type: USER_UPDATE_SUCCESS, payload: userData });
+    }
+}
 
 function* userLoginSaga() {
     try {
@@ -69,10 +104,6 @@ function* userUpdateSaga(action) {
         const theme = payload.get('theme');
         document.documentElement.setAttribute('data-theme', theme);
         document.body.setAttribute('data-theme', theme);
-
-
-
-
 
         yield put({ type: USER_UPDATE_SUCCESS, payload: response.data });
 

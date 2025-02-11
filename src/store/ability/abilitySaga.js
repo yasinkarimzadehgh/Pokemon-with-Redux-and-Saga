@@ -13,9 +13,6 @@ export function* watchAbilitySaga() {
     yield takeLatest(GET_ABILITIES_REQUEST, getAbilitiesSaga);
     yield takeLatest(DELETE_ABILITIES_REQUEST, deleteAbilitiesSaga);
 
-    // yield takeEvery(GET_ABILITIES_REQUEST, getAbilitiesSaga);
-    // yield takeEvery(DELETE_ABILITIES_REQUEST, deleteAbilitiesSaga);
-
 }
 
 const getAbilitiesState = (state) => state.ability;
